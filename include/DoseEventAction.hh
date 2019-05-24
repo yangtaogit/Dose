@@ -6,9 +6,11 @@
 #define DoseEventAction_h 1
 
 #include "G4UserEventAction.hh"
+#include "G4ThreeVector.hh"
 #include "globals.hh"
 
 class DoseRunAction;
+class G4Event;
 
 /// Event action class
 ///
@@ -22,11 +24,11 @@ class DoseEventAction : public G4UserEventAction
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
 
+    void RecordTotal(G4double edep);
+
     void RecordHead(G4double edep, 
 		G4double point_in_x, G4double point_in_y, G4double point_in_z,
 		G4double point_out_x, G4double point_out_y, G4double point_out_z);
-
-    void RecordTotal(G4double edep);
 
     void RecordChest(G4double edep, 
 		G4double point_in_x, G4double point_in_y, G4double point_in_z,
@@ -41,7 +43,7 @@ class DoseEventAction : public G4UserEventAction
   private:
     DoseRunAction* fRunAction;
 
-    G4double px=0, py=0, pz=0;
+    G4ThreeVector primary_direction;
 
     G4double edep_total=0.;
     G4double edep_head=0., edep_neck=0., edep_chest=0.;

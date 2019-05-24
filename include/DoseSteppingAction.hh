@@ -10,6 +10,7 @@
 #include "DoseDetectorConstruction.hh"
 
 class DoseEventAction;
+class G4Step;
 
 
 /// Stepping action class

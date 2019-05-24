@@ -13,7 +13,6 @@
 #include "G4AccumulableManager.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
-#include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -25,21 +24,10 @@ DoseRunAction::DoseRunAction()
   // set printing event number per each event
   G4RunManager::GetRunManager()->SetPrintProgress(1);
 
-  // add new units for dose
-  // 
-  const G4double milligray = 1.e-3*gray;
-  const G4double microgray = 1.e-6*gray;
-  const G4double nanogray  = 1.e-9*gray;  
-  const G4double picogray  = 1.e-12*gray;
-   
-  new G4UnitDefinition("milligray", "milliGy" , "Dose", milligray);
-  new G4UnitDefinition("microgray", "microGy" , "Dose", microgray);
-  new G4UnitDefinition("nanogray" , "nanoGy"  , "Dose", nanogray);
-  new G4UnitDefinition("picogray" , "picoGy"  , "Dose", picogray); 
 
   // Create analysis manager
   // The choice of analysis technology is done via selectin of a namespace
-  // in JMQAnalysis.hh
+  // in DoseAnalysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
   analysisManager->SetVerboseLevel(1);
@@ -65,9 +53,9 @@ DoseRunAction::DoseRunAction()
   analysisManager->CreateNtupleDColumn("chest_center_x");
   analysisManager->CreateNtupleDColumn("chest_center_y");
   analysisManager->CreateNtupleDColumn("chest_center_z");
-  analysisManager->CreateNtupleDColumn("particle_momentum_x");
-  analysisManager->CreateNtupleDColumn("particle_momentum_y");
-  analysisManager->CreateNtupleDColumn("particle_momentum_z");
+  analysisManager->CreateNtupleDColumn("particle_direction_x");
+  analysisManager->CreateNtupleDColumn("particle_direction_y");
+  analysisManager->CreateNtupleDColumn("particle_direction_z");
   analysisManager->FinishNtuple();
 
 }

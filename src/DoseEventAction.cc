@@ -8,6 +8,7 @@
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
+#include "G4ThreeVector.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -40,9 +41,10 @@ void DoseEventAction::BeginOfEventAction(const G4Event* event)
     x_EdepC_chest=0, y_EdepC_chest=0, z_EdepC_chest=0;
 
     //Note : Only one particle emits per event
-    px = event->GetPrimaryVertex(0)->GetPrimary()->GetPx();
-    py = event->GetPrimaryVertex(0)->GetPrimary()->GetPy();
-    pz = event->GetPrimaryVertex(0)->GetPrimary()->GetPz();
+    primary_direction = event->GetPrimaryVertex(event->GetNumberOfPrimaryVertex()-1)->GetPrimary()->GetMomentumDirection();
+    // px = event->GetPrimaryVertex(0)->GetPrimary()->GetPx();
+    // py = event->GetPrimaryVertex(0)->GetPrimary()->GetPy();
+    // pz = event->GetPrimaryVertex(0)->GetPrimary()->GetPz();
 
 }
 
@@ -80,11 +82,12 @@ void DoseEventAction::EndOfEventAction(const G4Event* event)
     analysisManager->FillNtupleDColumn(10, y_chest);
     analysisManager->FillNtupleDColumn(11, z_chest);
 
-    analysisManager->FillNtupleDColumn(12, px);
-    analysisManager->FillNtupleDColumn(13, py);
-    analysisManager->FillNtupleDColumn(14, pz);
+    analysisManager->FillNtupleDColumn(12, primary_direction[0]);
+    analysisManager->FillNtupleDColumn(13, primary_direction[1]);
+    analysisManager->FillNtupleDColumn(14, primary_direction[2]);
 
     analysisManager->AddNtupleRow();
+
 
     G4cout << "\n---> End of event: " << eventID << G4endl;
 }

@@ -22,17 +22,7 @@ DosePrimaryGeneratorAction::DosePrimaryGeneratorAction()
   fParticleGun(0), 
   fEnvelopeBox(0)
 {
-  G4int n_particle = 1;
-  fParticleGun  = new G4ParticleGun(n_particle);
 
-  // default particle kinematic
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  G4ParticleDefinition* particle
-    = particleTable->FindParticle(particleName="gamma");
-  fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,63.*cm));
-  fParticleGun->SetParticleEnergy(0.662*MeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -53,24 +43,18 @@ void DosePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // on DetectorConstruction class we get Envelope volume
   // from G4LogicalVolumeStore.
   
+  G4int n_particle = 1;
+  fParticleGun  = new G4ParticleGun(n_particle);
 
-  if (!fEnvelopeBox)
-  {
-    G4LogicalVolume* envLV
-      = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
-    if ( envLV ) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
-  }
+  // default particle kinematic
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  G4String particleName;
+  G4ParticleDefinition* particle
+    = particleTable->FindParticle(particleName="gamma");
+  fParticleGun->SetParticleDefinition(particle);
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,63.*cm));
+  fParticleGun->SetParticleEnergy(0.662*MeV);
 
-  if ( fEnvelopeBox ) {
-  }  
-  else  {
-    G4ExceptionDescription msg;
-    msg << "Envelope volume of box shape not found.\n"; 
-    msg << "Perhaps you have changed geometry.\n";
-    msg << "The gun will be place at the center.";
-    G4Exception("DosePrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
-  }
 
   G4double direction_theta = acos(G4UniformRand());
   if( G4UniformRand() < 0.5){ direction_theta = M_PI-direction_theta; };
