@@ -8,7 +8,6 @@
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
-#include "G4ThreeVector.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -40,11 +39,6 @@ void DoseEventAction::BeginOfEventAction(const G4Event* event)
     x_EdepC_head=0, y_EdepC_head=0, z_EdepC_head=0;
     x_EdepC_chest=0, y_EdepC_chest=0, z_EdepC_chest=0;
 
-    //Note : Only one particle emits per event
-    primary_direction = event->GetPrimaryVertex(event->GetNumberOfPrimaryVertex()-1)->GetPrimary()->GetMomentumDirection();
-    // px = event->GetPrimaryVertex(0)->GetPrimary()->GetPx();
-    // py = event->GetPrimaryVertex(0)->GetPrimary()->GetPy();
-    // pz = event->GetPrimaryVertex(0)->GetPrimary()->GetPz();
 
 }
 
@@ -54,13 +48,18 @@ void DoseEventAction::EndOfEventAction(const G4Event* event)
 {   
     G4int eventID = event->GetEventID();
 
+    //Note : Only one particle emits per event
+    px = event->GetPrimaryVertex(0)->GetPrimary()->GetPx();
+    py = event->GetPrimaryVertex(0)->GetPrimary()->GetPy();
+    pz = event->GetPrimaryVertex(0)->GetPrimary()->GetPz();
+
     x_head = x_EdepC_head/edep_head;
     y_head = y_EdepC_head/edep_head;
     z_head = z_EdepC_head/edep_head;
-
-    x_chest = x_EdepC_head/edep_chest;
-    y_chest = y_EdepC_head/edep_chest;
-    z_chest = z_EdepC_head/edep_chest;
+  
+    x_chest = x_EdepC_chest/edep_chest;
+    y_chest = y_EdepC_chest/edep_chest;
+    z_chest = z_EdepC_chest/edep_chest;
 
     auto analysisManager = G4AnalysisManager::Instance();
     analysisManager->FillNtupleDColumn(0, eventID);
@@ -78,13 +77,13 @@ void DoseEventAction::EndOfEventAction(const G4Event* event)
     analysisManager->FillNtupleDColumn(10, y_head);
     analysisManager->FillNtupleDColumn(11, z_head);
 
-    analysisManager->FillNtupleDColumn(9, x_chest);
-    analysisManager->FillNtupleDColumn(10, y_chest);
-    analysisManager->FillNtupleDColumn(11, z_chest);
+    analysisManager->FillNtupleDColumn(12, x_chest);
+    analysisManager->FillNtupleDColumn(13, y_chest);
+    analysisManager->FillNtupleDColumn(14, z_chest);
 
-    analysisManager->FillNtupleDColumn(12, primary_direction[0]);
-    analysisManager->FillNtupleDColumn(13, primary_direction[1]);
-    analysisManager->FillNtupleDColumn(14, primary_direction[2]);
+    analysisManager->FillNtupleDColumn(15, px);
+    analysisManager->FillNtupleDColumn(16, py);
+    analysisManager->FillNtupleDColumn(17, pz);
 
     analysisManager->AddNtupleRow();
 

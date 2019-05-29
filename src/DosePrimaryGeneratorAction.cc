@@ -19,10 +19,21 @@
 
 DosePrimaryGeneratorAction::DosePrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0), 
-  fEnvelopeBox(0)
+  fParticleGun(0)
 {
+  G4int n_particle = 1;
+  fParticleGun  = new G4ParticleGun(n_particle);
 
+  // default particle kinematic
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  G4String particleName;
+  G4ParticleDefinition* particle
+    = particleTable->FindParticle(particleName="gamma");
+  fParticleGun->SetParticleDefinition(particle);
+  //fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,63.*cm));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,113.*cm));
+
+  fParticleGun->SetParticleEnergy(0.662*MeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -36,25 +47,6 @@ DosePrimaryGeneratorAction::~DosePrimaryGeneratorAction()
 
 void DosePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of ecah event
-  //
-
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
-  
-  G4int n_particle = 1;
-  fParticleGun  = new G4ParticleGun(n_particle);
-
-  // default particle kinematic
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  G4ParticleDefinition* particle
-    = particleTable->FindParticle(particleName="gamma");
-  fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,0.*cm,63.*cm));
-  fParticleGun->SetParticleEnergy(0.662*MeV);
-
 
   G4double direction_theta = acos(G4UniformRand());
   if( G4UniformRand() < 0.5){ direction_theta = M_PI-direction_theta; };

@@ -6,7 +6,6 @@
 #define DoseEventAction_h 1
 
 #include "G4UserEventAction.hh"
-#include "G4ThreeVector.hh"
 #include "globals.hh"
 
 class DoseRunAction;
@@ -43,7 +42,7 @@ class DoseEventAction : public G4UserEventAction
   private:
     DoseRunAction* fRunAction;
 
-    G4ThreeVector primary_direction;
+    G4double px=0, py=0, pz=0;
 
     G4double edep_total=0.;
     G4double edep_head=0., edep_neck=0., edep_chest=0.;
@@ -72,7 +71,7 @@ inline void DoseEventAction::RecordHead(G4double edep,
 
     x_EdepC_head += edep*(point_out_x+point_in_x)/2;
     y_EdepC_head += edep*(point_out_y+point_in_y)/2;
-    y_EdepC_head += edep*(point_out_z+point_in_z)/2;
+    z_EdepC_head += edep*(point_out_z+point_in_z)/2;
 
 }
 
@@ -84,7 +83,7 @@ inline void DoseEventAction::RecordChest(G4double edep,
 
     x_EdepC_chest += edep*(point_out_x+point_in_x)/2;
     y_EdepC_chest += edep*(point_out_y+point_in_y)/2;
-    y_EdepC_chest += edep*(point_out_z+point_in_z)/2;
+    z_EdepC_chest += edep*(point_out_z+point_in_z)/2;
 
 }
 
@@ -102,7 +101,7 @@ inline void DoseEventAction::RecordArmL(G4double edep) {
 
 inline void DoseEventAction::RecordArmR(G4double edep) {
     
-    edep_arm_l += edep; 
+    edep_arm_r += edep; 
 
 }
 

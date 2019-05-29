@@ -213,8 +213,8 @@ G4VPhysicalVolume* DoseDetectorConstruction::Construct()
   //
 
   G4Material* leg_mat = nist->FindOrBuildMaterial("G4_WATER");
-  G4ThreeVector leg_pos_l = G4ThreeVector(0, -66.*cm, 7.5*cm);
-  G4ThreeVector leg_pos_r = G4ThreeVector(0, -66.*cm, -7.5*cm);
+  G4ThreeVector leg_pos_l = G4ThreeVector(0, -66.*cm, -7.5*cm);
+  G4ThreeVector leg_pos_r = G4ThreeVector(0, -66.*cm, 7.5*cm);
   
   G4double innerRadiusOfTheLeg = 0.*cm;
   G4double outerRadiusOfTheLeg = 5.5*cm;

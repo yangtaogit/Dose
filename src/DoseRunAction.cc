@@ -13,6 +13,7 @@
 #include "G4AccumulableManager.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
+#include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -24,10 +25,21 @@ DoseRunAction::DoseRunAction()
   // set printing event number per each event
   G4RunManager::GetRunManager()->SetPrintProgress(1);
 
+  // add new units for dose
+  // 
+  const G4double milligray = 1.e-3*gray;
+  const G4double microgray = 1.e-6*gray;
+  const G4double nanogray  = 1.e-9*gray;  
+  const G4double picogray  = 1.e-12*gray;
+   
+  new G4UnitDefinition("milligray", "milliGy" , "Dose", milligray);
+  new G4UnitDefinition("microgray", "microGy" , "Dose", microgray);
+  new G4UnitDefinition("nanogray" , "nanoGy"  , "Dose", nanogray);
+  new G4UnitDefinition("picogray" , "picoGy"  , "Dose", picogray); 
 
   // Create analysis manager
   // The choice of analysis technology is done via selectin of a namespace
-  // in DoseAnalysis.hh
+  // in JMQAnalysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
   analysisManager->SetVerboseLevel(1);
@@ -38,24 +50,25 @@ DoseRunAction::DoseRunAction()
   analysisManager->CreateNtuple("Dose", "Energe deposition in human body");
   analysisManager->CreateNtupleDColumn("EventID");
 
-  analysisManager->CreateNtupleDColumn("edep_total");
-  analysisManager->CreateNtupleDColumn("edep_head");
-  analysisManager->CreateNtupleDColumn("edep_neck");
-  analysisManager->CreateNtupleDColumn("edep_chest");
-  analysisManager->CreateNtupleDColumn("edep_arm_l");
-  analysisManager->CreateNtupleDColumn("edep_arm_r");
-  analysisManager->CreateNtupleDColumn("edep_leg_l");
-  analysisManager->CreateNtupleDColumn("edep_leg_r");
+  analysisManager->CreateNtupleDColumn("Edep_total");
+  
+  analysisManager->CreateNtupleDColumn("Edep_head");
+  analysisManager->CreateNtupleDColumn("Edep_neck");
+  analysisManager->CreateNtupleDColumn("Edep_chest");
+  analysisManager->CreateNtupleDColumn("Edep_arm_l");
+  analysisManager->CreateNtupleDColumn("Edep_arm_r");
+  analysisManager->CreateNtupleDColumn("Edep_leg_l");
+  analysisManager->CreateNtupleDColumn("Edep_leg_r");
 
-  analysisManager->CreateNtupleDColumn("head_center_x");
-  analysisManager->CreateNtupleDColumn("head_center_y");
-  analysisManager->CreateNtupleDColumn("head_center_z");
-  analysisManager->CreateNtupleDColumn("chest_center_x");
-  analysisManager->CreateNtupleDColumn("chest_center_y");
-  analysisManager->CreateNtupleDColumn("chest_center_z");
-  analysisManager->CreateNtupleDColumn("particle_direction_x");
-  analysisManager->CreateNtupleDColumn("particle_direction_y");
-  analysisManager->CreateNtupleDColumn("particle_direction_z");
+  analysisManager->CreateNtupleDColumn("Head_center_x");
+  analysisManager->CreateNtupleDColumn("Head_center_y");
+  analysisManager->CreateNtupleDColumn("Head_center_z");
+  analysisManager->CreateNtupleDColumn("Chest_center_x");
+  analysisManager->CreateNtupleDColumn("Chest_center_y");
+  analysisManager->CreateNtupleDColumn("Chest_center_z");
+  analysisManager->CreateNtupleDColumn("Particle_momentum_x");
+  analysisManager->CreateNtupleDColumn("Particle_momentum_y");
+  analysisManager->CreateNtupleDColumn("Particle_momentum_z");
   analysisManager->FinishNtuple();
 
 }
@@ -77,7 +90,7 @@ void DoseRunAction::BeginOfRunAction(const G4Run* run)
   auto analysisManager = G4AnalysisManager::Instance();
 
   // Open an output file
-  G4String fileName = "Dose";
+  G4String fileName = "Dose_100cm";
   analysisManager->OpenFile(fileName);
 
   // inform the runManager to save random number seed
@@ -107,11 +120,4 @@ void DoseRunAction::EndOfRunAction(const G4Run* run)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-// void DoseRunAction::AddEdep(G4double fTotalEdep)
-// {
-  
-// }
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
